@@ -19,7 +19,7 @@
   "author": "PayNode Labs",
   "license": "MIT",
   "dependencies": {
-    "@paynodelabs/sdk-js": "^2.2.3",
+    "@paynodelabs/sdk-js": "^2.4.0",
     "cac": "7.0.0"
   },
   "devDependencies": {

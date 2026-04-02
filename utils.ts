@@ -1,5 +1,4 @@
 import { ethers } from '@paynodelabs/sdk-js';
-import * as dotenv from 'dotenv';
 import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import fs from 'fs';
@@ -31,7 +30,7 @@ export const GLOBAL_CONFIG = {
  * Skill version for JSON output metadata. 
  */
 export const SKILL_VERSION = pkg.version;
-export const SDK_VERSION = '2.2.3'; // Bundled default
+export const SDK_VERSION = '2.4.0'; // Updated to Protocol Baseline
 
 /**
  * Shared base options for all CLI commands.
