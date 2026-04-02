@@ -4,7 +4,7 @@ import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import pkg from '../package.json';
+import pkg from './package.json';
 
 // --- Environment (System Only) ---
 // [SECURITY] This skill strictly uses system environment variables for better update persistence 

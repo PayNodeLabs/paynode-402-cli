@@ -29,7 +29,7 @@ export async function mintAction(options: MintOptions) {
         }
 
         const wallet = new ethers.Wallet(pk, provider);
-        const mintAmountStr = options.amount || '1000';
+        const mintAmountStr = String(options.amount || '1000');
 
         // Gas check
         const balance = await provider.getBalance(wallet.address);
