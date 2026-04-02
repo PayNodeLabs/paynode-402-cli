@@ -16,15 +16,33 @@ if (!process.env.CLIENT_PRIVATE_KEY) {
 /**
  * Centralized Configuration Loader
  * [SECURITY] Consolidates environment variable access for better auditing.
+ * Priority: 1. System Environment Variable (B) | 2. XDG Config File (A)
  */
-export const GLOBAL_CONFIG = {
-    MARKETPLACE_URL: process.env.PAYNODE_MARKET_URL || 'https://mk.paynode.dev',
-    PRIVATE_KEY: process.env.CLIENT_PRIVATE_KEY,
-    CUSTOM_ROUTER: process.env.CUSTOM_ROUTER_ADDRESS,
-    CUSTOM_USDC: process.env.CUSTOM_USDC_ADDRESS,
-    RPC_URL_OVERRIDE: process.env.PAYNODE_RPC_URL || process.env.RPC_URL,
-    RPC_TIMEOUT: Number(process.env.PAYNODE_RPC_TIMEOUT) || 15_000
-};
+function loadConfig() {
+    const home = process.env.HOME || process.env.USERPROFILE || '';
+    const xdgConfigHome = process.env.XDG_CONFIG_HOME || join(home, '.config');
+    const xdgConfigPath = join(xdgConfigHome, 'paynode', 'config.json');
+    
+    let localConfig: Record<string, string> = {};
+    if (fs.existsSync(xdgConfigPath)) {
+        try {
+            localConfig = JSON.parse(fs.readFileSync(xdgConfigPath, 'utf8'));
+        } catch { /* ignore invalid json */ }
+    }
+
+    return {
+        MARKETPLACE_URL: process.env.PAYNODE_MARKET_URL || localConfig.PAYNODE_MARKET_URL || 'https://mk.paynode.dev',
+        PRIVATE_KEY: process.env.CLIENT_PRIVATE_KEY || localConfig.CLIENT_PRIVATE_KEY,
+        CUSTOM_ROUTER: process.env.CUSTOM_ROUTER_ADDRESS || localConfig.CUSTOM_ROUTER_ADDRESS,
+        CUSTOM_USDC: process.env.CUSTOM_USDC_ADDRESS || localConfig.CUSTOM_USDC_ADDRESS,
+        RPC_URL_OVERRIDE: process.env.PAYNODE_RPC_URL || process.env.RPC_URL || localConfig.PAYNODE_RPC_URL,
+        RPC_TIMEOUT: Number(process.env.PAYNODE_RPC_TIMEOUT || localConfig.PAYNODE_RPC_TIMEOUT) || 15_000,
+        configSource: process.env.CLIENT_PRIVATE_KEY ? 'env' : (localConfig.CLIENT_PRIVATE_KEY ? 'file' : 'missing'),
+        configFilePath: xdgConfigPath
+    };
+}
+
+export const GLOBAL_CONFIG = loadConfig();
 
 /**
  * Skill version for JSON output metadata. 
@@ -240,7 +258,8 @@ export function cleanupOldTasks(taskDir: string, maxAgeSeconds: number): number 
 export function getPrivateKey(isJson: boolean): string {
     const pk: string | undefined = GLOBAL_CONFIG.PRIVATE_KEY;
     if (!pk || typeof pk !== 'string') {
-        reportError('CLIENT_PRIVATE_KEY not found in environment. Please set it as a system environment variable.', isJson, EXIT_CODES.AUTH_FAILURE);
+        const msg = `CLIENT_PRIVATE_KEY not found. Please set environment (B) or create config file (A) at: ${GLOBAL_CONFIG.configFilePath}`;
+        reportError(msg, isJson, EXIT_CODES.AUTH_FAILURE);
     }
     const pkRegex = /^0x[0-9a-fA-F]{64}$/;
     if (!pkRegex.test(pk)) {
