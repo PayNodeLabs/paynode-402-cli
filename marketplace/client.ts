@@ -63,7 +63,7 @@ export interface RawCatalogApiItem {
 
 function normalizeCatalogItem(raw: RawCatalogApiItem): CatalogApiItem {
   return {
-    id: raw.id || raw.api_id || '',
+    id: raw.api_id || raw.id?.replace(/-(testnet|mainnet)$/, '') || '',
     name: raw.name || raw.title || raw.api_name || raw.api_id || 'unnamed',
     description: raw.description,
     tags: Array.isArray(raw.tags) ? raw.tags : [],
@@ -147,7 +147,12 @@ export class MarketplaceClient {
     if (network) params.set('network', network);
     const query = params.toString();
     const path = `/api/v1/paid-apis/${encodeURIComponent(apiId)}${query ? `?${query}` : ''}`;
-    const raw = await this.request<any>(path);
+    const raw = await this.request<any>(path, {
+      method: 'POST',
+      headers: {
+        'X-PayNode-Discovery': 'true'
+      }
+    });
     return normalizeCatalogItem(raw);
   }
 
