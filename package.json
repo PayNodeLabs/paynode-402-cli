@@ -1,0 +1,40 @@
+{
+  "name": "@paynodelabs/paynode-402-cli",
+  "version": "2.5.1",
+  "description": "The official command-line interface for the PayNode protocol. Designed for AI Agents to execute stateless micro-payments via HTTP 402.",
+  "type": "module",
+  "main": "./index.ts",
+  "bin": {
+    "paynode-402": "index.ts"
+  },
+  "keywords": [
+    "paynode",
+    "x402",
+    "payment-required",
+    "web3",
+    "bun",
+    "cli",
+    "agent"
+  ],
+  "author": "PayNode Labs",
+  "license": "MIT",
+  "scripts": {
+    "test": "bun test",
+    "build": "echo 'No build required for Bun' && exit 0"
+  },
+  "dependencies": {
+    "@paynodelabs/sdk-js": "^2.4.0",
+    "cac": "7.0.0"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PayNodeLabs/paynode-402-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PayNodeLabs/paynode-402-cli/issues"
+  },
+  "homepage": "https://github.com/PayNodeLabs/paynode-402-cli#readme"
+}
