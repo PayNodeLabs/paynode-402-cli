@@ -31,6 +31,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/PayNodeLabs/paynode-402-cli.git"
-  }
+    "url": "https://github.com/PayNodeLabs/paynode-402-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PayNodeLabs/paynode-402-cli/issues"
+  },
+  "homepage": "https://github.com/PayNodeLabs/paynode-402-cli#readme"
 }
