@@ -7,6 +7,7 @@ import { requestAction } from './commands/request.ts';
 import { listPaidApisAction } from './commands/list-paid-apis.ts';
 import { getApiDetailAction } from './commands/get-api-detail.ts';
 import { invokePaidApiAction } from './commands/invoke-paid-api.ts';
+import { tasksAction } from './commands/tasks.ts';
 import { EXIT_CODES } from './utils.ts';
 
 const cli = cac('paynode-402');
@@ -80,6 +81,14 @@ cli
   .option('--task-id <id>', 'Internal: task ID for background worker')
   .action((apiId, options) => {
     return invokePaidApiAction(apiId, options);
+  });
+
+// Command: tasks
+cli
+  .command('tasks [subcommand]', 'Manage background tasks (subcommands: list, clean)')
+  .option('--clean', 'Clean all task files immediately')
+  .action((subcommand, options) => {
+    return tasksAction(subcommand, options);
   });
 
 

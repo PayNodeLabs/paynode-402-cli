@@ -159,6 +159,11 @@ async function executeCore(url: string, args: string[], options: UnifiedRequestO
     const isJson = !!options.json || !!options.taskId;
     const startTs = Date.now();
 
+    // [INPUT-GUARD] Validate URL structure 
+    if (!url || typeof url !== 'string' || (!url.startsWith('http://') && !url.startsWith('https://'))) {
+        throw new Error(`Invalid destination URL: '${url}'. Must start with 'http://' or 'https://'.`);
+    }
+
     const { rpcUrls, networkName, isSandbox } = await resolveNetwork(options.rpc, options.network, options.rpcTimeout);
     requireMainnetConfirmation(isSandbox, !!options.confirmMainnet, isJson);
 

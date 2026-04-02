@@ -29,8 +29,12 @@ export const GLOBAL_CONFIG = {
 /**
  * Skill version for JSON output metadata. 
  */
+import sdkPkg from '@paynodelabs/sdk-js/package.json';
+/**
+ * Skill version and runtime SDK version. 
+ */
 export const SKILL_VERSION = pkg.version;
-export const SDK_VERSION = '2.4.0'; // Updated to Protocol Baseline
+export const SDK_VERSION = sdkPkg.version; // Dynamically resolved from installed package
 
 /**
  * Shared base options for all CLI commands.
