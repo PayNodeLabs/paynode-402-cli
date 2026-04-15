@@ -21,7 +21,8 @@ export async function mintAction(options: MintOptions) {
         const { provider, usdcAddress, chainId, networkName, isSandbox } = await resolveNetwork(
             options.rpc,
             options.network || 'testnet',
-            options.rpcTimeout
+            options.rpcTimeout,
+            isJson
         );
 
         if (!isSandbox) {
@@ -57,13 +58,17 @@ export async function mintAction(options: MintOptions) {
         if (!isJson) console.error('⏳ Sending mint transaction...');
         const tx = await withRetry(
             () => usdc.mint(wallet.address, amount),
-            'mint'
+            'mint',
+            undefined,
+            isJson
         );
 
         if (!isJson) console.error('⏳ Waiting for confirmation...');
         const receipt: any = await withRetry(
             () => tx.wait(),
-            'mintConfirm'
+            'mintConfirm',
+            undefined,
+            isJson
         );
 
         if (!receipt || receipt.status !== 1) {

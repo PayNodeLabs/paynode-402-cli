@@ -134,7 +134,8 @@ const MAX_RETRIES = 3;
 export async function withRetry<T>(
     fn: () => Promise<T>,
     label: string,
-    maxRetries = MAX_RETRIES
+    maxRetries = MAX_RETRIES,
+    quiet = false
 ): Promise<T> {
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -144,7 +145,7 @@ export async function withRetry<T>(
             lastError = error;
             if (!isTransientError(error) || attempt >= maxRetries - 1) throw error;
             const backoffMs = Math.pow(2, attempt) * 1000 * (0.5 + Math.random());
-            console.error(`⚠️ [${label}] ${error.message}. Retry #${attempt + 1} (of ${maxRetries - 1}) in ${Math.round(backoffMs)}ms...`);
+            if (!quiet) console.error(`⚠️ [${label}] ${error.message}. Retry #${attempt + 1} (of ${maxRetries - 1}) in ${Math.round(backoffMs)}ms...`);
             await new Promise(resolve => setTimeout(resolve, backoffMs));
         }
     }
@@ -285,7 +286,7 @@ export function requireMainnetConfirmation(isSandbox: boolean, confirmMainnet: b
 /**
  * Resolves network configuration with multi-RPC failover.
  */
-export async function resolveNetwork(providedRpcUrl?: string, network?: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<NetworkConfig> {
+export async function resolveNetwork(providedRpcUrl?: string, network?: string, timeoutMs = DEFAULT_TIMEOUT_MS, quiet = false): Promise<NetworkConfig> {
     const {
         PAYNODE_ROUTER_ADDRESS,
         PAYNODE_ROUTER_ADDRESS_SANDBOX,
@@ -324,7 +325,7 @@ export async function resolveNetwork(providedRpcUrl?: string, network?: string, 
             break;
         } catch (error: any) {
             lastError = error;
-            if (rpcUrls.length > 1) console.error(`⚠️ [resolveNetwork] RPC ${url} failed: ${error.message}.`);
+            if (rpcUrls.length > 1 && !quiet) console.error(`⚠️ [resolveNetwork] RPC ${url} failed: ${error.message}.`);
         }
     }
 

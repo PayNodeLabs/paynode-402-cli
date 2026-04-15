@@ -1,6 +1,6 @@
 {
   "name": "@paynodelabs/paynode-402-cli",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "The official command-line interface for the PayNode protocol. Designed for AI Agents to execute stateless micro-payments via HTTP 402.",
   "type": "module",
   "main": "./index.ts",
@@ -23,7 +23,7 @@
     "build": "echo 'No build required for Bun' && exit 0"
   },
   "dependencies": {
-    "@paynodelabs/sdk-js": "^2.4.0",
+    "@paynodelabs/sdk-js": "^2.5.0",
     "cac": "7.0.0"
   },
   "devDependencies": {
