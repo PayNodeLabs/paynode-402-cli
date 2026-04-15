@@ -80,9 +80,9 @@ function normalizeCatalogItem(raw: RawCatalogApiItem): CatalogApiItem {
     method: raw.method || raw.http_method,
     payable_url: raw.payable_url || raw.payment_url,
     invoke_url: raw.invoke_url,
-    input_schema: raw.input_schema,
-    sample_response: raw.sample_response,
-    headers_template: raw.headers_template
+    input_schema: raw.input_schema || {},
+    sample_response: raw.sample_response || {},
+    headers_template: raw.headers_template || {}
   };
 }
 
@@ -99,7 +99,9 @@ export class MarketplaceClient {
     const url = joinUrl(this.baseUrl, path);
     const response = await withRetry(
       () => fetch(url, init),
-      `marketplace:${path}`
+      `marketplace:${path}`,
+      undefined,
+      this.isJson
     );
 
     if (!response.ok) {
@@ -175,7 +177,7 @@ export class MarketplaceClient {
 
       return preparation;
     } catch (err: any) {
-      console.warn(`[Marketplace] /invoke preparation failed for ${apiId}, falling back to direct proxy. Error: ${err.message}`);
+      if (!this.isJson) console.warn(`[Marketplace] /invoke preparation failed for ${apiId}, falling back to direct proxy. Error: ${err.message}`);
       const detail = await this.getApiDetail(apiId, options.network);
       const invokeUrl = detail.payable_url || detail.invoke_url;
       if (!invokeUrl) {

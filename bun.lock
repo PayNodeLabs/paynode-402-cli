@@ -5,7 +5,7 @@
     "": {
       "name": "@paynodelabs/paynode-402-cli",
       "dependencies": {
-        "@paynodelabs/sdk-js": "^2.4.0",
+        "@paynodelabs/sdk-js": "^2.5.0",
         "cac": "7.0.0",
       },
       "devDependencies": {
@@ -22,7 +22,7 @@
 
     "@noble/hashes": ["@noble/hashes@1.3.2", "", {}, "sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ=="],
 
-    "@paynodelabs/sdk-js": ["@paynodelabs/sdk-js@2.4.0", "", { "dependencies": { "ethers": "^6.16.0", "ioredis": "^5.10.1" }, "peerDependencies": { "express": ">=4.0.0" }, "optionalPeers": ["express"] }, "sha512-OGYJcBdVB9n0WbJXTC04OqjyZu+FvWBoJvzMriSuXn+p6LjzZ4sgev+aV6wp2dQuXbXraEz2MQKq/jhZsQvzJA=="],
+    "@paynodelabs/sdk-js": ["@paynodelabs/sdk-js@2.5.0", "", { "dependencies": { "ethers": "^6.16.0", "ioredis": "^5.10.1" }, "peerDependencies": { "express": ">=4.0.0" }, "optionalPeers": ["express"] }, "sha512-5MsEHcEBJ68E4Gyrmg396ONTQifQ+670StiVlO4yKohtzlu4g92LYM/gj6VTOU286AdlpTIfymkbkmzCXpnERA=="],
 
     "@types/node": ["@types/node@25.5.0", "", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw=="],
 

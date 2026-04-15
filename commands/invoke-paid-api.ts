@@ -32,18 +32,20 @@ function mergeHeaders(
   return merged;
 }
 
-function parsePayload(data?: string): any {
+function parsePayload(data?: string, isJson?: boolean): any {
   if (!data) return undefined;
 
   try {
     return JSON.parse(data);
   } catch (err: any) {
     const isJsonLike = data.trim().startsWith('{') || data.trim().startsWith('[');
-    if (isJsonLike) {
-      console.warn(`⚠️ [Warning] Invocation data looks like JSON but failed to parse: ${err.message}`);
-      console.warn(`Sending as raw string instead. Please verify your JSON syntax.`);
-    } else {
-      console.warn(`⚠️ [Warning] Invocation data is not valid JSON. Sending as raw string.`);
+    if (!isJson) {
+        if (isJsonLike) {
+        console.warn(`⚠️ [Warning] Invocation data looks like JSON but failed to parse: ${err.message}`);
+        console.warn(`Sending as raw string instead. Please verify your JSON syntax.`);
+        } else {
+        console.warn(`⚠️ [Warning] Invocation data is not valid JSON. Sending as raw string.`);
+        }
     }
     return data;
   }
@@ -60,7 +62,7 @@ export async function invokePaidApiAction(apiId: string, options: InvokePaidApiO
 
     const invoke = await client.prepareInvoke(apiId, {
       network: options.network,
-      payload: parsePayload(options.data)
+      payload: parsePayload(options.data, isJson)
     });
 
     const requestHeaders = mergeHeaders(invoke.headers, options.header);

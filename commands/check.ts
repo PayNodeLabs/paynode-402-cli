@@ -24,7 +24,8 @@ export async function checkAction(options: CheckOptions) {
         const { provider, usdcAddress, chainId, networkName, isSandbox } = await resolveNetwork(
             options.rpc,
             options.network,
-            options.rpcTimeout
+            options.rpcTimeout,
+            isJson
         );
 
         // Mainnet safety gate
@@ -43,7 +44,9 @@ export async function checkAction(options: CheckOptions) {
                     provider
                 ).balanceOf(address)
             ]),
-            'balanceCheck'
+            'balanceCheck',
+            undefined,
+            isJson
         );
 
         // BigInt comparisons are used for logic (no precision loss).

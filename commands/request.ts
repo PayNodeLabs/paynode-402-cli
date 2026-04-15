@@ -164,7 +164,7 @@ async function executeCore(url: string, args: string[], options: UnifiedRequestO
         throw new Error(`Invalid destination URL: '${url}'. Must start with 'http://' or 'https://'.`);
     }
 
-    const { rpcUrls, networkName, isSandbox } = await resolveNetwork(options.rpc, options.network, options.rpcTimeout);
+    const { rpcUrls, networkName, isSandbox } = await resolveNetwork(options.rpc, options.network, options.rpcTimeout, isJson);
     requireMainnetConfirmation(isSandbox, !!options.confirmMainnet, isJson);
 
     // Handle params (k=v)
@@ -262,10 +262,12 @@ async function executeCore(url: string, args: string[], options: UnifiedRequestO
 
     const pk = getPrivateKey(isJson);
 
-    const client = new PayNodeAgentClient(pk, rpcUrls);
+    const client = new PayNodeAgentClient(pk, { rpcUrls, quiet: isJson });
     const response = await withRetry(
         () => client.requestGate(targetUrl, requestOptions),
-        'x402:requestGate'
+        'x402:requestGate',
+        undefined,
+        isJson
     );
 
     const contentType = response.headers.get('content-type') || 'application/octet-stream';
