@@ -67,6 +67,36 @@ bunx @paynodelabs/paynode-402-cli mint --amount 100 --network testnet
 
 ---
 
+## 📦 Publishing
+
+This package is published under the scoped name `@paynodelabs/paynode-402-cli`, so the npm publish command must include `--access public`.
+
+### Release Steps
+
+```bash
+cd packages/paynode-402-cli
+
+# 1. Verify the package version
+cat package.json | rg '"version"'
+
+# 2. Optional: quick local verification
+bun index.ts invoke-paid-api crypto-price-quick coin_id=bitcoin --network mainnet --confirm-mainnet --json --dry-run
+
+# 3. Publish scoped package to npm
+npm publish --access public
+```
+
+### Notes
+
+- If you bump the version first, use `npm version patch`, `npm version minor`, or `npm version major`.
+- After publishing, verify the live package with:
+
+```bash
+bunx @paynodelabs/paynode-402-cli@<new-version> invoke-paid-api crypto-price-quick coin_id=bitcoin --network mainnet --confirm-mainnet --json --dry-run
+```
+
+---
+
 ## 🔗 References
 - **Marketplace**: [https://mk.paynode.dev](https://mk.paynode.dev)
 - **Protocol SPEC**: [PayNode Docs](https://docs.paynode.dev)
