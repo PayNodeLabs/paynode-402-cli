@@ -13,6 +13,18 @@ interface InvokePaidApiOptions extends BaseCliOptions {
   taskId?: string;
 }
 
+export function parseKvParams(params: string[]): Record<string, string> {
+  const payload: Record<string, string> = {};
+  for (const param of params) {
+    if (!param.includes('=')) continue;
+    const [key, ...value] = param.split('=');
+    const normalizedKey = key.trim();
+    if (!normalizedKey) continue;
+    payload[normalizedKey] = value.join('=').trim();
+  }
+  return payload;
+}
+
 function mergeHeaders(
   marketplaceHeaders: Record<string, string> | undefined,
   cliHeader: string | string[] | undefined
@@ -51,8 +63,8 @@ function parsePayload(data?: string, isJson?: boolean): any {
   }
 }
 
-export async function invokePaidApiAction(apiId: string, options: InvokePaidApiOptions) {
-    const isJson = !!options.json;
+export async function invokePaidApiAction(apiId: string, params: string[] = [], options: InvokePaidApiOptions) {
+  const isJson = !!options.json;
 
   try {
     const client = new MarketplaceClient({
@@ -60,16 +72,22 @@ export async function invokePaidApiAction(apiId: string, options: InvokePaidApiO
       json: isJson
     });
 
+    const kvPayload = parseKvParams(params);
+    const explicitPayload = parsePayload(options.data, isJson);
+    const payload = explicitPayload ?? (Object.keys(kvPayload).length > 0 ? kvPayload : undefined);
+
     const invoke = await client.prepareInvoke(apiId, {
       network: options.network,
-      payload: parsePayload(options.data, isJson)
+      payload
     });
 
     const requestHeaders = mergeHeaders(invoke.headers, options.header);
     const hasPreparedBody = !!(invoke.body && typeof invoke.body === 'object' && Object.keys(invoke.body).length > 0);
     const requestBody = hasPreparedBody 
       ? JSON.stringify(invoke.body) 
-      : (options.data || undefined); // Use undefined if no data to trigger smart promotion if needed
+      : (explicitPayload !== undefined
+          ? options.data
+          : (Object.keys(kvPayload).length > 0 ? JSON.stringify(kvPayload) : undefined));
 
     await requestAction(invoke.invoke_url, [], {
       json: options.json,

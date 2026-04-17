@@ -70,7 +70,7 @@ cli
 
 // Command: invoke-paid-api
 cli
-  .command('invoke-paid-api <apiId>', 'Invoke one paid API through the marketplace flow')
+  .command('invoke-paid-api <apiId> [...params]', 'Invoke one paid API through the marketplace flow. Params: key=value pairs for request payload.')
   .option('-X, --method <method>', 'HTTP method override')
   .option('-d, --data <data>', 'Invocation payload as raw JSON string')
   .option('-H, --header [header]', 'HTTP header in "Key: Value" format (can be used multiple times)', { default: [] })
@@ -79,8 +79,8 @@ cli
   .option('--max-age <seconds>', 'Auto-delete task files older than N seconds (default: 3600)')
   .option('--task-dir <path>', 'Task directory for background results (default: <TMPDIR>/paynode-tasks)')
   .option('--task-id <id>', 'Internal: task ID for background worker')
-  .action((apiId, options) => {
-    return invokePaidApiAction(apiId, options);
+  .action((apiId, params, options) => {
+    return invokePaidApiAction(apiId, params, options);
   });
 
 // Command: tasks
