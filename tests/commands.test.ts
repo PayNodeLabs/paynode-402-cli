@@ -57,6 +57,28 @@ mock.module("@paynodelabs/sdk-js", () => ({
  * 🚀 [DEFERRED LOADING]
  */
 const { checkAction } = await import("../commands/check.ts");
+const { parseKvParams } = await import("../commands/invoke-paid-api.ts");
+
+describe("parseKvParams() helper tests", () => {
+    test("✅ Should parse key=value positional params into request payload", () => {
+        expect(parseKvParams(["coin_id=bitcoin", "vs_currencies=usd"])).toEqual({
+            coin_id: "bitcoin",
+            vs_currencies: "usd"
+        });
+    });
+
+    test("✅ Should keep additional '=' characters in the value", () => {
+        expect(parseKvParams(["query=a=b=c"])).toEqual({
+            query: "a=b=c"
+        });
+    });
+
+    test("✅ Should ignore malformed positional params", () => {
+        expect(parseKvParams(["coin_id=bitcoin", "oops", "=bad"])).toEqual({
+            coin_id: "bitcoin"
+        });
+    });
+});
 
 describe("checkAction() CLI command tests", () => {
     let logSpy: any;
